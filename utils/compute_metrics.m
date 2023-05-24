@@ -1,5 +1,5 @@
-function [results] = compute_metrics(obs, pred, algorithm_names, results)
-%COMPUTE_METRICS This function compute 8 different metrics to evaluate regression models performance
+function [results] = compute_metrics(obs, pred, algorithm_names)
+%COMPUTE_METRICS This function compute 7 different metrics to evaluate regression models performance
 %   obs: real values
 %   pred: predicted values from regression model
 %   algorithm_names: names of the regression model used
@@ -13,14 +13,18 @@ function [results] = compute_metrics(obs, pred, algorithm_names, results)
         pred = table2array(pred);
     end
     
+    results = table('Size', [1 7], ...
+    'VariableTypes', {'double','double','double','double', 'double', 'double', 'double'}, ...
+    'VariableNames', {'RMSE','NRMSE', 'MAE', 'Corr Coeff', 'Mean Obs', 'Mean Pred', 'Bias'},...
+    'RowNames', mlAlgName);
+
     results(algorithm_names,'RMSE') = {computeRMSE(obs, pred)}; 
     results(algorithm_names,'NRMSE') = {computeNRMSE(obs, pred)}; 
     results(algorithm_names,'MAE') = {computeMAE(obs, pred)}; 
-    results(algorithm_names,'RSE') = {computeRSE(obs, pred)}; 
-    results(algorithm_names,'RRSE') = {sqrt(computeRSE(obs, pred))}; 
-    results(algorithm_names,'RAE') = {computeRAE(obs, pred)}; 
-    results(algorithm_names,'R2') = {computeR2(obs, pred)}; 
     results(algorithm_names,'Corr Coeff') = {computeCorrCoef(obs, pred)}; 
+    results(algorithm_names,'Mean Obs') = {mean(obs)}; 
+    results(algorithm_names,'Mean Pred') = {mean(pred)}; 
+    results(algorithm_names,'Bias') = {computeBias(obs, pred)}; 
 end
 
 function [rmse] = computeRMSE(obs, pred)
@@ -28,29 +32,15 @@ function [rmse] = computeRMSE(obs, pred)
 end
 
 function [nrmse] = computeNRMSE(obs, pred)
-    nrmse = computeRMSE(obs, pred) / mean(obs);
+    nrmse = computeRMSE(obs, pred) / max(obs);
 end
 
 function [mae] = computeMAE(obs, pred)
     mae = (sum(abs(pred-obs)))/height(obs);
 end
 
-function [rse] = computeRSE (obs, pred)
-    num = sum((pred-obs).^2);
-    den = sum((obs-mean(obs)).^2);
-    rse = num/den;
-end
-
-function [rae] = computeRAE (obs, pred)
-    num = sum(abs(pred-obs));
-    den = sum(abs(mean(obs) - obs));
-    rae = num / den;
-end
-
-function [r2] = computeR2 (obs, pred)
-    sse = sum((obs-pred).^2);
-    sst = sum((obs - mean(obs)).^2);
-    r2 = 1 - (sse/sst);
+function [bias] = computeBias (obs, pred)
+    bias = mean(obs - pred);
 end
 
 function [r] = computeCorrCoef(obs, pred)
