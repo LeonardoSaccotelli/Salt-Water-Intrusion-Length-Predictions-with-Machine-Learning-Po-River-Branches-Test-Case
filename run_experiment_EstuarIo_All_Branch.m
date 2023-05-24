@@ -35,7 +35,7 @@ targetFeatureName = "LxObs";
 
 % Set maxObjectiveEvaluations as maximum number of objective functions to
 %  be evaluated in the optimization process
-maxObjectiveEvaluations = 10;
+maxObjectiveEvaluations = 2;
 
 % Set k to be use in k-fold cross validation
 kfold = 5;
@@ -123,25 +123,7 @@ fprintf("Result stored in 'result\\experiment_result_EstuarIO.mat'\n" + ...
 %% Function to run a single ML algorithm and store the results
 function [branchResults, j, trainingPredictions, testPredictions] = ...
     run_ML_algorithm (mlAlg, mlAlgName, trainingDataset, testDataset, targetFeatureName, maxObjectiveEvaluations, kfold, branchResults, j)
-    
-    % Define all the table and structure to store the result
-    metrics = table('Size', [1 8], ...
-    'VariableTypes', {'double','double','double','double', 'double', 'double', 'double', 'double'}, ...
-    'VariableNames', {'RMSE','NRMSE', 'MAE','RSE', 'RRSE','RAE', 'R2', 'Corr Coeff'},...
-    'RowNames', mlAlgName);
-
-    pwbX = [1 5 10 20 30];
-    pwbXRowNames = string();
-    
-    for i = 1:numel(pwbX)
-        pwbXRowNames(i) = strcat('PWB', num2str(pwbX(i)));
-    end
-    
-    pwbTable = table('Size',[numel(pwbX) 1],...
-        'VariableTypes', repmat({'double'}, 1, 1), ...
-        'VariableNames', mlAlgName,...
-        'RowNames', pwbXRowNames);
-
+   
     % train the model with hyperparameters optimization
     [model, trainingPredictions, bestHyperparameters, featuresImportanceTable] = ...
         mlAlg(trainingDataset(:,["Qriver","Qtidef","Qll","Sll","LxObs"]), ...
@@ -154,9 +136,9 @@ function [branchResults, j, trainingPredictions, testPredictions] = ...
     branchResults{j,1} = mlAlgName;
     branchResults{j,2} = model;
     branchResults{j,3} = bestHyperparameters;
-    branchResults{j,4} = compute_metrics(trainingDataset(:, targetFeatureName), trainingPredictions, mlAlgName, metrics);
-    branchResults{j,5} = compute_metrics(testDataset(:, targetFeatureName), testPredictions, mlAlgName, metrics);
-    branchResults{j,6} = create_pwb_table(testDataset(:, targetFeatureName), testPredictions, pwbTable, mlAlgName, pwbX);
+    branchResults{j,4} = compute_metrics(trainingDataset(:, targetFeatureName), trainingPredictions, mlAlgName);
+    branchResults{j,5} = compute_metrics(testDataset(:, targetFeatureName), testPredictions, mlAlgName);
+    branchResults{j,6} = create_pwb_table(testDataset(:, targetFeatureName), testPredictions, mlAlgName);
     branchResults{j,7} = featuresImportanceTable;
     
     j = j+1;

@@ -19,7 +19,7 @@ function [pwbTable] = create_pwb_table(obs, pred, mlAlgName)
         'RowNames', pwbXRowNames);
 
     for i=1:height(pwbTable)
-        pwbTable(i,algorithm_name) = {round(computePWBTable(obs, pred, pwbX(i)),2)};
+        pwbTable(i,mlAlgName) = {round(computePWBTable(obs, pred, pwbX(i)),2)};
     end
 end
     

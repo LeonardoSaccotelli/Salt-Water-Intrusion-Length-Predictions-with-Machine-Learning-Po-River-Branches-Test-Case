@@ -1,4 +1,4 @@
-function [results] = compute_metrics(obs, pred, algorithm_names)
+function [results] = compute_metrics(obs, pred, mlAlgName)
 %COMPUTE_METRICS This function compute 7 different metrics to evaluate regression models performance
 %   obs: real values
 %   pred: predicted values from regression model
@@ -18,13 +18,13 @@ function [results] = compute_metrics(obs, pred, algorithm_names)
     'VariableNames', {'RMSE','NRMSE', 'MAE', 'Corr Coeff', 'Mean Obs', 'Mean Pred', 'Bias'},...
     'RowNames', mlAlgName);
 
-    results(algorithm_names,'RMSE') = {computeRMSE(obs, pred)}; 
-    results(algorithm_names,'NRMSE') = {computeNRMSE(obs, pred)}; 
-    results(algorithm_names,'MAE') = {computeMAE(obs, pred)}; 
-    results(algorithm_names,'Corr Coeff') = {computeCorrCoef(obs, pred)}; 
-    results(algorithm_names,'Mean Obs') = {mean(obs)}; 
-    results(algorithm_names,'Mean Pred') = {mean(pred)}; 
-    results(algorithm_names,'Bias') = {computeBias(obs, pred)}; 
+    results(mlAlgName,'RMSE') = {computeRMSE(obs, pred)}; 
+    results(mlAlgName,'NRMSE') = {computeNRMSE(obs, pred)}; 
+    results(mlAlgName,'MAE') = {computeMAE(obs, pred)}; 
+    results(mlAlgName,'Corr Coeff') = {computeCorrCoef(obs, pred)}; 
+    results(mlAlgName,'Mean Obs') = {mean(obs)}; 
+    results(mlAlgName,'Mean Pred') = {mean(pred)}; 
+    results(mlAlgName,'Bias') = {computeBias(obs, pred)}; 
 end
 
 function [rmse] = computeRMSE(obs, pred)
