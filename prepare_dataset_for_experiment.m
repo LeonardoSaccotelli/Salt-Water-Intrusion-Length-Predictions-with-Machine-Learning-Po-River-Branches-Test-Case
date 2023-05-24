@@ -5,11 +5,11 @@ addpath(genpath("utils\"));
 %% Set import dataset settings
 % load dataset
 filepath = "data\final\Lx_Dataset_EstuarIO_Final_Training_Test_Data.xlsx";
-nVars = 10;
-dataRange = ["A2:J31", "A2:J21", "A2:J17", "A2:J20", "A2:J86"];
+nVars = 11;
+dataRange = ["A2:K31", "A2:K21", "A2:K17", "A2:K20", "A2:K86"];
 sheetName = ["GORO", "GNOCCA", "TOLLE", "DRITTA", "ALL"];
-varNames = ["ID","Date","Doy", "BranchName", "Qriver", "Qll", "Qtidef", "Sll", "LxObs", "DatasetType"]; 
-varTypes = ["int16","datetime","int16", "string", "double", "double", "double","double","double","string"];
+varNames = ["ID","Date","Doy", "BranchName", "Qriver", "Qll", "Qtidef", "Sll", "LxObs", "EbmPredictions", "DatasetType"]; 
+varTypes = ["int16","datetime","int16", "string", "double", "double", "double","double", "double", "double","string"];
 
 % define the cell array to store all the dataset 
 nrows = numel(sheetName);
