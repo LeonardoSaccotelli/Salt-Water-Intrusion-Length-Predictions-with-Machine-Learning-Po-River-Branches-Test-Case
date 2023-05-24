@@ -24,7 +24,7 @@ disp(storedDataset);
 fprintf("------------------------------------------------\n");
 
 %% Define the cell array and table to store all the experimental results
-algorithmNames = {'RF', 'LSBoost'};
+algorithmNames = {'EBM', 'RF', 'LSBoost'};
 nAlgorithm = numel(algorithmNames);
 nBranch = height(storedDataset);
 experimentalResults = cell(nBranch, 3);
@@ -47,11 +47,19 @@ for i = 1:nBranch
     branchName = storedDataset.Branch(i);
 
     trainingDataset = storedDataset.TrainingDataset{i};
-    trainingPredictionResult = trainingDataset(:,["ID","Date","Doy","BranchName","DatasetType","LxObs"]);
+    trainingPredictionResult = trainingDataset(:,["ID","Date","Doy","BranchName","DatasetType","LxObs", "EbmPredictions"]);
 
     testDataset = storedDataset.TestDataset{i};
-    testPredictionResult = testDataset(:,["ID","Date","Doy","BranchName","DatasetType","LxObs"]);
+    testPredictionResult = testDataset(:,["ID","Date","Doy","BranchName","DatasetType","LxObs", "EbmPredictions"]);
 
+    %% Compute metrics on EBM predictions 
+    fprintf("================================================================\n");
+    fprintf(strcat("Compute metrics for ", algorithmNames(j), " model on: ", branchName, " branch \n"));
+    fprintf("================================================================\n");
+    
+    [branchResults, j] = compute_ebm_metrics(algorithmNames(j), trainingPredictionResult, ...
+    testPredictionResult, targetFeatureName, branchResults, j);
+    
     %% Run the ML training process with Random Forest
     fprintf("================================================================\n");
     fprintf(strcat("Training ",algorithmNames(j), " on: ", branchName, " branch \n"));
@@ -119,6 +127,22 @@ end
 save("result\experiment_result_EstuarIO.mat","experimentalResults");
 fprintf("Result stored in 'result\\experiment_result_EstuarIO.mat'\n" + ...
     "----------------------------------------------------------------\n");
+
+%% Function to compute metrics on EBM results
+function [branchResults, j] = compute_ebm_metrics(mlAlgName, trainingPredictionResult, ...
+    testPredictionResult, targetFeatureName, branchResults, j)
+
+    % store all the results
+    branchResults{j,1} = mlAlgName;
+    branchResults{j,2} = "NOT AVAILABLE";
+    branchResults{j,3} = "NOT AVAILABLE";
+    branchResults{j,4} = compute_metrics(trainingPredictionResult(:, targetFeatureName), trainingPredictionResult.EbmPredictions, mlAlgName);
+    branchResults{j,5} = compute_metrics(testPredictionResult(:, targetFeatureName), testPredictionResult.EbmPredictions, mlAlgName);
+    branchResults{j,6} = create_pwb_table(testPredictionResult(:, targetFeatureName), testPredictionResult.EbmPredictions, mlAlgName);
+    branchResults{j,7} = "NOT AVAILABLE";
+    
+    j = j+1;
+end
 
 %% Function to run a single ML algorithm and store the results
 function [branchResults, j, trainingPredictions, testPredictions] = ...
