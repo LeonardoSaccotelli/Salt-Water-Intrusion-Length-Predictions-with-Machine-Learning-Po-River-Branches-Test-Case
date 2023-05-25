@@ -74,21 +74,16 @@ random_forest_settings_optimized = fitrensemble( ...
     "UseParallel", true));
 
 %% Save all the best hyperparameters
-nLearn = random_forest_settings_optimized.ModelParameters.NLearn;
+bestHyperparameters = cell(1,4);
+bestHyperparameters{1,1} = random_forest_settings_optimized.ModelParameters.NLearn;
 modelParams = ...
     struct(random_forest_settings_optimized.ModelParameters.LearnerTemplates{1,1});
-maxSplits = modelParams.ModelParams.MaxSplits;
-minLeaf = modelParams.ModelParams.MinLeaf;
-nVarToSample = modelParams.ModelParams.NVarToSample;
+bestHyperparameters{1,2} = modelParams.ModelParams.MinLeaf;
+bestHyperparameters{1,3} = modelParams.ModelParams.MaxSplits;
+bestHyperparameters{1,4} = modelParams.ModelParams.NVarToSample;
 
-bestHyperparameters = table('Size', [1 4], 'VariableTypes',...
-   {'double','double','double','double'}, 'VariableNames',...
-   {'nLearn','minLeaf','maxSplits','nVarToSample'});
-
-bestHyperparameters.nLearn(1) = nLearn;
-bestHyperparameters.minLeaf(1) = minLeaf;
-bestHyperparameters.maxSplits(1) = maxSplits;
-bestHyperparameters.nVarToSample(1) = nVarToSample;
+bestHyperparameters = cell2table(bestHyperparameters,'VariableNames',...
+   {'NumLearningCycles','MinLeafSize','MaxNumSplits','NumVariablesToSample'}); 
 
 %% Create the result struct with predict function
 predictorExtractionFcn = @(t) t(:, predictorNames);

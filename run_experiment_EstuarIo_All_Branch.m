@@ -24,7 +24,7 @@ disp(storedDataset);
 fprintf("------------------------------------------------\n");
 
 %% Define the cell array and table to store all the experimental results
-algorithmNames = {'EBM', 'RF', 'LSBoost'};
+algorithmNames = {'EBM', 'SVM','RF', 'LSBoost'};
 nAlgorithm = numel(algorithmNames);
 nBranch = height(storedDataset);
 experimentalResults = cell(nBranch, 3);
@@ -35,7 +35,7 @@ targetFeatureName = "LxObs";
 
 % Set maxObjectiveEvaluations as maximum number of objective functions to
 %  be evaluated in the optimization process
-maxObjectiveEvaluations = 2;
+maxObjectiveEvaluations = 150;
 
 % Set k to be use in k-fold cross validation
 kfold = 5;
@@ -60,6 +60,26 @@ for i = 1:nBranch
     [branchResults, j] = compute_ebm_metrics(algorithmNames(j), trainingPredictionResult, ...
     testPredictionResult, targetFeatureName, branchResults, j);
     
+     %% Run the ML training process with SVM
+    fprintf("================================================================\n");
+    fprintf(strcat("Training ",algorithmNames(j), " on: ", branchName, " branch \n"));
+    fprintf("================================================================\n");
+    
+    [branchResults, j, trainingPredictions, testPredictions] = ...
+        run_ML_algorithm( ...
+        @svm_function, ...
+        algorithmNames(j), ...
+        trainingDataset(:,["Qriver","Qtidef","Qll","Sll","LxObs"]), ...
+        testDataset, ...
+        targetFeatureName, ...
+        maxObjectiveEvaluations, ...
+        kfold, ...
+        branchResults, ...
+        j);
+    
+    trainingPredictionResult.SvmPredictions = trainingPredictions;
+    testPredictionResult.SvmPredictions = testPredictions;
+
     %% Run the ML training process with Random Forest
     fprintf("================================================================\n");
     fprintf(strcat("Training ",algorithmNames(j), " on: ", branchName, " branch \n"));
@@ -168,7 +188,6 @@ function [branchResults, j, trainingPredictions, testPredictions] = ...
     j = j+1;
 end
 
-
 %% Function to display the results
 function display_ml_results (experimentalResults, branchName)
     experiment = experimentalResults(experimentalResults.Branch == branchName, :);
@@ -182,7 +201,7 @@ function display_ml_results (experimentalResults, branchName)
     fprintf("----------------------------------------------------------------\n");
     t = table();
     for j = 1: height(experiment)
-        t = [t; experiment.TrainingEvaluation(j,["RMSE","MAE","Corr Coeff"])];
+        t = [t; experiment.TrainingEvaluation(j,:)];
     end
     disp(t)
 
@@ -191,7 +210,7 @@ function display_ml_results (experimentalResults, branchName)
     fprintf("----------------------------------------------------------------\n");
     t = table();
     for j = 1: height(experiment)
-        t = [t; experiment.TestEvaluation(j,["RMSE","MAE","Corr Coeff"])];
+        t = [t; experiment.TestEvaluation(j,:)];
     end
     disp(t)
 

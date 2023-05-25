@@ -1,4 +1,4 @@
-%% Function to train and test a lsboost regression model
+%% Function to train and test a SVM regression model
 %% Input:
 %  1) trainingDataset: 
 %  Table containing the same predictor and response columns as those 
@@ -40,7 +40,8 @@
 %  procedure
 
 function [trainedModel, validationPredictions, bestHyperparameters, featuresImportanceTable] = ...
-    lsboost_function(trainingDataset,targetFeatureName,maxObjectiveEvaluations, kFold)
+    svm_function(trainingDataset, targetFeatureName, maxObjectiveEvaluations, kFold)
+
 %% Extract predictors and response
 inputTable = trainingDataset;
 
@@ -57,42 +58,42 @@ response = inputTable(:, targetFeatureName);
 crossValidationSettings = cvpartition(height(response),'KFold',kFold);
 
 %% Set parameters to be optimized during the auto-tuning procedure
-lsboost_settings_optimized = fitrensemble( ...
-    predictors, ...
+svm_settings_optimized = fitrsvm( ...
+    predictors, ... 
     response, ...
-    'Method', 'LSBoost', ...
     'OptimizeHyperParameters',...
-    {'NumLearningCycles','LearnRate','MinLeafSize','MaxNumSplits'}, ...
+    {'BoxConstraint','KernelScale','Epsilon','KernelFunction', 'PolynomialOrder', 'Standardize'}, ...
     "HyperparameterOptimizationOptions", ...
     struct(...
     "Optimizer", "bayesopt",...
     "AcquisitionFunctionName","expected-improvement-per-second-plus", ...
-    "MaxObjectiveEvaluations", maxObjectiveEvaluations,...
     'CVPartition', crossValidationSettings, ...
+    "MaxObjectiveEvaluations", maxObjectiveEvaluations,...
     "Repartition", false,...
     "UseParallel", true));
 
-%% Save all the optimized hyperparameters
-bestHyperparameters = cell(1,4);
-bestHyperparameters{1,1} = lsboost_settings_optimized.ModelParameters.NLearn;
-bestHyperparameters{1,2} = lsboost_settings_optimized.ModelParameters.LearnRate;
-modelParams = ...
-    struct(lsboost_settings_optimized.ModelParameters.LearnerTemplates{1,1});
-bestHyperparameters{1,3} = modelParams.ModelParams.MinLeaf;
-bestHyperparameters{1,4} = modelParams.ModelParams.MaxSplits;
+%% Save all the best hyperparameters
+bestHyperparameters = cell(1,6);
+
+bestHyperparameters{1,1} = svm_settings_optimized.ModelParameters.BoxConstraint;
+bestHyperparameters{1,2} = svm_settings_optimized.ModelParameters.KernelScale;
+bestHyperparameters{1,3} = svm_settings_optimized.ModelParameters.Epsilon;
+bestHyperparameters{1,4} = svm_settings_optimized.ModelParameters.KernelFunction;
+bestHyperparameters{1,5} = svm_settings_optimized.ModelParameters.KernelPolynomialOrder;
+bestHyperparameters{1,6} = svm_settings_optimized.ModelParameters.StandardizeData;
 
 bestHyperparameters = cell2table(bestHyperparameters,'VariableNames',...
-   {'NumLearningCycles','LearnRate','MinLeafSize','MaxNumSplits'}); 
+   {'BoxConstraint','KernelScale','Epsilon','KernelFunction', 'PolynomialOrder', 'Standardize'});
 
 %% Create the result struct with predict function
 predictorExtractionFcn = @(t) t(:, predictorNames);
-ensemblePredictFcn = @(x) predict(lsboost_settings_optimized, x);
+ensemblePredictFcn = @(x) predict(svm_settings_optimized, x);
 trainedModel.predictFcn = @(x) ensemblePredictFcn(predictorExtractionFcn(x));
 
 %% Add additional fields to the result struct
 trainedModel.RequiredVariables = trainingDataset.Properties.VariableNames;
-trainedModel.RegressionEnsemble = lsboost_settings_optimized;
-trainedModel.About = 'This struct is a lsboost optimized trained model.';
+trainedModel.RegressionEnsemble = svm_settings_optimized;
+trainedModel.About = 'This struct is a svm optimized trained model.';
 trainedModel.HowToPredict = ...
     sprintf(['To make predictions on a new table, T, use: ' ...
     '\n  yfit = trainedModel.predictFcn(T) \n' ...
@@ -103,14 +104,10 @@ trainedModel.HowToPredict = ...
     'see <a href="matlab:helpview(fullfile(docroot, ''stats'', ''stats.map''), ' ...
     '''appregression_exportmodeltoworkspace'')">How to predict using an exported model</a>.']);
 
-%% Perform cross-validation with k = 5
+%% Perform cross-validation with k fold
 partitionedModel = crossval(trainedModel.RegressionEnsemble, 'KFold', kFold);
 validationPredictions = kfoldPredict(partitionedModel);
 
 %% Compute features importance
-featureImportance = predictorImportance(lsboost_settings_optimized);
-featuresImportanceTable = table('Size', [width(predictorNames) 1], 'VariableTypes',...
-    {'double'}, 'VariableNames', {'score'},'RowNames', string(predictorNames'));
-    featuresImportanceTable.score = featureImportance';
-featuresImportanceTable = sortrows(featuresImportanceTable,'score','descend');
+featuresImportanceTable = "NOT AVAILABLE";
 end
