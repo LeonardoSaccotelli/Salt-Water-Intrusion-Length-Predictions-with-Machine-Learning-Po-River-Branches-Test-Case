@@ -24,7 +24,7 @@ fprintf("------------------------------------------------\n" + ...
 disp(experimentalResults);
 fprintf("------------------------------------------------\n");
 
-algorithm_names = {'RF', 'LSBoost'};
+algorithm_names = {'EBM', 'RF', 'LSBoost'};
 response = 'LxObs';
 nBranch = height(experimentalResults);
 
@@ -32,14 +32,14 @@ for i = 1:nBranch
     tb = experimentalResults.MLPredictions{i,1};  
   
     if (experimentalResults.Branch(i) == "ALL")
-        training_table_results = tb(tb.DatasetType == "TRAINING",["BranchName","LxObs","RFPredictions","LSBoostPredictions"]);
-        test_table_results = tb(tb.DatasetType == "TEST",["BranchName", "LxObs","RFPredictions","LSBoostPredictions"]);
+        training_table_results = tb(tb.DatasetType == "TRAINING",["BranchName","LxObs", "EbmPredictions","RFPredictions","LSBoostPredictions"]);
+        test_table_results = tb(tb.DatasetType == "TEST",["BranchName", "LxObs","EbmPredictions", "RFPredictions","LSBoostPredictions"]);
 
         create_perfect_fit(training_table_results,algorithm_names,true,30, strcat("Training on: Po ", experimentalResults.Branch(i)), true);
         create_perfect_fit(test_table_results,algorithm_names,true,30, strcat("Test on: Po ", experimentalResults.Branch(i)), true);
     else
-        training_table_results = tb(tb.DatasetType == "TRAINING",["LxObs","RFPredictions","LSBoostPredictions"]);
-        test_table_results = tb(tb.DatasetType == "TEST",["LxObs","RFPredictions","LSBoostPredictions"]);
+        training_table_results = tb(tb.DatasetType == "TRAINING",["LxObs", "EbmPredictions","RFPredictions","LSBoostPredictions"]);
+        test_table_results = tb(tb.DatasetType == "TEST",["LxObs","EbmPredictions", "RFPredictions","LSBoostPredictions"]);
         create_perfect_fit(training_table_results,algorithm_names,true,30, strcat("Training on: Po ", experimentalResults.Branch(i)), false);
         create_perfect_fit(test_table_results,algorithm_names,true,30, strcat("Test on: Po ", experimentalResults.Branch(i)), false);
     end
