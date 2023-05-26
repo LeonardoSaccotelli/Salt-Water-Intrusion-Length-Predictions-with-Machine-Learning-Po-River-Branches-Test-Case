@@ -14,31 +14,24 @@
 %  4) k-fold to use in cross-validation
 
 %% Output:
-%  Compact structure with the following data:
-%  
 %  1) trainedModel:
 %  Struct containing the trained regression model. The
 %  struct contains various fields with information about the trained
 %  model. 
 %  trainedModel.predictFcn: A function to make predictions on new data.
-%
-%  2) validationRMSE: 
-%  Double containing the RMSE which measure the performance of the trained
-%  model.
 %       
-%  3) validationPredictions: 
+%  2) validationPredictions: 
 %  Vector with the predected values with respect the observed values in the
 %  trainingDataset
-%      
-%  4)featuresImportanceTable:
+%
+%  3) bestHyperparameters:
+%  Table with the optimized hyperparameters obtained by auto-tuning
+%  procedure
+%
+%  4)featuresImportanceTable, or "NOT AVAILABLE" if the model doesn't support it:
 %  Table with features and score which indicates how important is each 
 %  feature to train the model. Features have been ordered from the most 
 %  important to the least important.
-%
-%  5) tuningResult:
-%  Table with the optimized hyperparameters obtained by auto-tuning
-%  procedure
-
 function [trainedModel, validationPredictions, bestHyperparameters, featuresImportanceTable] = ...
     svm_function(trainingDataset, targetFeatureName, maxObjectiveEvaluations, kFold)
 

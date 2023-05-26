@@ -2,7 +2,7 @@ function [] = create_perfect_fit(resumePredictions,algorithm_names,addBoundPerfe
     f = figure;
     f.Position = [0 0 1100 450];
     
-    t = tiledlayout(1,2);
+    t = tiledlayout(2,2);
     for i = 1:numel(algorithm_names)
         nexttile;
         if isAllBranch
