@@ -1,6 +1,6 @@
 function [] = create_perfect_fit(resumePredictions,algorithm_names,addBoundPerfectFit, percentageBoundPerfectFit, sharedTitle, isAllBranch)
     f = figure;
-    f.Position = [0 0 1100 450];
+    f.Position = [0 0 1150 954];
     
     t = tiledlayout(2,2);
     for i = 1:numel(algorithm_names)
@@ -49,8 +49,12 @@ function plotPerfectFit(obs, pred, modelName, addBound, percentageBound)
     hAx.LineWidth=1.4;
     xlim([0 40]);
     ylim([0 40]);
-    xlabel('True response');
-    ylabel('Predicted response');
+    xticks([0 5 10 15 20 25 30 35 40]);
+    xticklabels({'0' '5' '10' '15' '20' '25' '30' '35' '40'});
+    yticks([0 5 10 15 20 25 30 35 40]);
+    yticklabels({'0' '5' '10' '15' '20' '25' '30' '35' '40'});
+    xlabel('True response (km)');
+    ylabel('Predicted response (km)');
     title(modelName);
     legend(legendName,'Location','northwest');
     set(gca,'FontSize',14);
@@ -108,8 +112,12 @@ function plotAllBranch(resumePredictions, modelName, addBound, percentageBound)
     hAx.LineWidth=1.4;
     xlim([0 40]);
     ylim([0 40]);
-    xlabel('True response');
-    ylabel('Predicted response');
+    xticks([0 5 10 15 20 25 30 35 40]);
+    xticklabels({'0' '5' '10' '15' '20' '25' '30' '35' '40'});
+    yticks([0 5 10 15 20 25 30 35 40]);
+    yticklabels({'0' '5' '10' '15' '20' '25' '30' '35' '40'});
+    xlabel('True response (km)');
+    ylabel('Predicted response (km)');
     title(modelName);
     legend(legendName,'Location','northwest');
     set(gca,'FontSize',14);

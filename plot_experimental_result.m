@@ -29,8 +29,7 @@ response = 'LxObs';
 nBranch = height(experimentalResults);
 
 for i = 1:nBranch
-    tb = experimentalResults.MLPredictions{i,1};  
-  
+    tb = experimentalResults.MLPredictions{i,1};
     if (experimentalResults.Branch(i) == "ALL")
         training_table_results = tb(tb.DatasetType == "TRAINING",["BranchName","LxObs", "EbmPredictions","SvmPredictions","RFPredictions","LSBoostPredictions"]);
         test_table_results = tb(tb.DatasetType == "TEST",["BranchName", "LxObs","EbmPredictions", "SvmPredictions","RFPredictions","LSBoostPredictions"]);
