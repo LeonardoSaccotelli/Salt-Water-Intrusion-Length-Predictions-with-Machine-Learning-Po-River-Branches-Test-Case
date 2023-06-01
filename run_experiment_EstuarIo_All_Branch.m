@@ -24,7 +24,7 @@ disp(storedDataset);
 fprintf("------------------------------------------------\n");
 
 %% Define the cell array and table to store all the experimental results
-algorithmNames = {'EBM', 'SVM','RF', 'LSBoost'};
+algorithmNames = {'EBM', 'SVM', 'RF', 'LSBoost'};
 nAlgorithm = numel(algorithmNames);
 nBranch = height(storedDataset);
 experimentalResults = cell(nBranch, 3);
