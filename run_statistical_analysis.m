@@ -21,3 +21,29 @@ fprintf("------------------------------------------------\n" + ...
 disp(storedDataset);
 fprintf("------------------------------------------------\n");
 
+%% Retrive dataset
+all_dataset = sortrows([storedDataset.TrainingDataset{5,1}; ...
+    storedDataset.TestDataset{5,1}], 1);
+all_dataset = all_dataset(:,["BranchName","Qll","Qriver","Qtidef","Sll","LxObs"]);
+
+%% Plot boxchart
+plot_boxplot_by_branch(all_dataset);
+
+%% Plot corrplot
+figure;
+corrplot(all_dataset(:,2:6));
+
+%% Function to plot a boxchart
+function [] = plot_boxplot_by_branch (dataset)
+    n_feat = width(dataset);
+    f = figure;
+    f.Position = [0 0 1150 954];
+    t = tiledlayout(3,2);
+    
+    for i = 2:n_feat
+        nexttile;
+        boxchart(categorical(table2array(dataset(:,1))), table2array(dataset(:,i)));
+        title(dataset.Properties.VariableNames(i));
+    end
+    title(t,"Boxplot of input and output features for ALL branches");
+end
