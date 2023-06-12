@@ -1,4 +1,25 @@
 function [] = create_perfect_fit(resumePredictions,algorithm_names,addBoundPerfectFit, percentageBoundPerfectFit, sharedTitle, isAllBranch)
+%CREATE_PERFECT_FIT This function plot a perfect predictions plot
+%   Input:
+%   1) resumePredictions:
+%   Table with a summary of observed and predicted values
+%  
+%   2) algorithm_names:
+%   String array with the names of the trained models
+%   
+%   3) addBoundPerfectFit:
+%   Boolean value to add or not a bound on the perfect predictions line
+%
+%   4) percentageBoundPerfectFit: 
+%   Percentage bound to be added on the perfect predictions plot    
+%
+%   5)  sharedTitle: 
+%   Common title of the plot
+%
+%   6) isAllBranch: 
+%   Boolean value to indicate if the dataset contains all the Po Branches
+%   or only one branch at time
+
     f = figure;
     f.Position = [0 0 1150 954];
     

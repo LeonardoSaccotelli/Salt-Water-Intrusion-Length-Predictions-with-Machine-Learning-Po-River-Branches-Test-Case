@@ -1,4 +1,25 @@
 function [pwbTable] = create_pwb_table(obs, pred, mlAlgName)
+%CREATE_PWB_TABLE This function compute the pwb Table
+%   Input:
+%   1) obs:
+%   The observed values
+%
+%   2) pred:
+%   The predicted values from regression model
+%
+%   3) pwbTable:
+%   Empty table in which save the results
+%   
+%   4) algorithm_name:
+%   The name of the algorithm for which we want to compute the pwbTable
+%
+%   5) pwbX:
+%   The different threshold in the pwbTable
+%
+%   Output:
+%   1) pwbTable:
+%   The table with the results updated
+   
     if istable(obs)
         obs = table2array(obs);
     end

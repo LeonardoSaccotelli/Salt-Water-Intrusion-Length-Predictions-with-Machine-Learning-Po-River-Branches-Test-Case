@@ -1,9 +1,22 @@
 function [results] = compute_metrics(obs, pred, mlAlgName)
-%COMPUTE_METRICS This function compute 7 different metrics to evaluate regression models performance
-%   obs: real values
-%   pred: predicted values from regression model
-%   algorithm_names: names of the regression model used
-%   results: table to store performance
+%COMPUTE_METRICS This function compute 8 different metrics to evaluate regression models performance
+%   Input:
+%   1) obs:
+%   The observed values
+%  
+%   2) pred:
+%   The predicted values from regression model
+%   
+%   3) algorithm_names:
+%   Names of the regression model used
+%   
+%   4) results:
+%   Table to store performance
+%
+%   Output:
+%   1) results:
+%   Table with the computed metrics
+
         
     if(istable(obs))
         obs = table2array(obs);

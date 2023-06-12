@@ -1,3 +1,5 @@
+%PLOT_EXPERIMENTAL_RESULT This script plot the results obtained by different ML models with all the different branches of Po River.
+
 %% Add to path subdirectory
 addpath(genpath("data\"));
 addpath(genpath("utils\"));

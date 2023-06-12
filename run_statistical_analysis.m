@@ -1,3 +1,5 @@
+%RUN_STATISTICAL_ANALYSIS This script create some statistical plot on the available dataset.
+
 %% Add to path subdirectory
 addpath(genpath("data\"));
 addpath(genpath("utils\"));

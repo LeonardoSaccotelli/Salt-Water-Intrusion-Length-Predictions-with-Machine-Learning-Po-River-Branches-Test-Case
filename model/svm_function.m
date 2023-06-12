@@ -1,8 +1,9 @@
-%% Function to train and test a SVM regression model
-%% Input:
+function [trainedModel, validationPredictions, bestHyperparameters, featuresImportanceTable] = ...
+    svm_function(trainingDataset, targetFeatureName, maxObjectiveEvaluations, kFold)
+%SVM_FUNCTION Function to train a SVM regression model
+%  Input:
 %  1) trainingDataset: 
-%  Table containing the same predictor and response columns as those 
-%  imported into the app.
+%  Table containing the predictors and response columns
 %  
 %  2) targetFeatureName: 
 %  String with the name of the target feature in the trainingData table.
@@ -12,8 +13,8 @@
 %  optimization process     
 %
 %  4) k-fold to use in cross-validation
-
-%% Output:
+%
+%  Output:
 %  1) trainedModel:
 %  Struct containing the trained regression model. The
 %  struct contains various fields with information about the trained
@@ -32,8 +33,6 @@
 %  Table with features and score which indicates how important is each 
 %  feature to train the model. Features have been ordered from the most 
 %  important to the least important.
-function [trainedModel, validationPredictions, bestHyperparameters, featuresImportanceTable] = ...
-    svm_function(trainingDataset, targetFeatureName, maxObjectiveEvaluations, kFold)
 
 %% Extract predictors and response
 inputTable = trainingDataset;

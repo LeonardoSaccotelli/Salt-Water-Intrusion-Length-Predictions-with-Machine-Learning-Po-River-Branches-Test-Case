@@ -1,3 +1,5 @@
+%PREPARE_DATASET_FOR_EXPERIMENT This script read the data from an xlsx file and put the data into the right shape to be used in the experiment. 
+
 %% Add to path subdirectory
 addpath(genpath("data\"));
 addpath(genpath("utils\"));

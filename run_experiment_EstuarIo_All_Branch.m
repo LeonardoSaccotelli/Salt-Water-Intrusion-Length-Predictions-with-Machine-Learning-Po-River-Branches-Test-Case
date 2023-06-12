@@ -1,3 +1,5 @@
+%RUN_EXPERIMENT_ESTUARIO_ALL_BRANCH This script run the entire experiment on the different branches of the Po River. 
+
 %% Add to path subdirectory
 addpath(genpath("data\"));
 addpath(genpath("utils\"));
